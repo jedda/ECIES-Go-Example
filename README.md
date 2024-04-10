@@ -1,4 +1,4 @@
-# ECIES Example
+# ECIES Go Example
 
 This example code is designed to illustrate the usage of the [ECIES Go Module](https://github.com/jedda/ecies).
 
