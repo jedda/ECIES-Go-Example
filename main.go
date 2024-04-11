@@ -1,8 +1,9 @@
-// This example Go code is designed to illustrate the usage of the ECIES Go Module
-// located here [ECIES Go] : https://github.com/jedda/ecies
-// Additionally, you can use it alongside the ECIES Companion Swift Playground
-// located here [ECIES Companion Swift Playground] : https://github.com/jedda/ecies-swift-playground
+// This example Go code is designed to illustrate the usage of the [ECIES Go Module]
+// Additionally, you can use it alongside the [ECIES Swift Playground]
 // in order to play with and learn more about ECIES encryption on Apple platforms.
+//
+// [ECIES Go Module]: https://github.com/jedda/ecies
+// [ECIES Swift Playground]: https://github.com/jedda/ecies-swift-playground
 package main
 
 import (
@@ -16,10 +17,10 @@ import (
 
 func main() {
 	// Firstly, let's import a private key from a Base64 representation.
-	// This is the same private key used in the ECIES Companion Swift Playground, so you can easily play around with
+	// This is the same private key used in the [ECIES Swift Playground] linked above, so you can easily play around with
 	// portable cross-platform encryption and decryption, but you can of course create your own keypair or use another
 	// public key for encryption (such as one from a Secure Enclave on an Apple device).
-	privateKey64 := "MHcCAQEEIApYOHG0phwakap6PdLA/0/70UtcEIQKyObwvcXm7dEvoAoGCCqGSM49AwEHoUQDQgAEl04Vp1A1pDMXt86RT+6LHJ98TVfqsawC4saolZybb9XLaaEUelgdBxp2+DT++8EVwqqkof1fSV432BLISpJgZw=="
+	privateKey64 := "MHcCAQEEIE8vNIElmwxSR+Zhl5NooE+FEupEgFbPbn0q3hMIbd2BoAoGCCqGSM49AwEHoUQDQgAE7qMGCWG0L7HYAptVhIbLyx3cFzhd5EXZ09MpVpZmBGS7yCId5WQYKtmy3gTC245ivlEZ759ZPFgstYMgQoZrsg=="
 	privateDecodedKey, err := base64.StdEncoding.DecodeString(privateKey64)
 	if err != nil {
 		log.Fatal(err)
@@ -34,15 +35,15 @@ func main() {
 		log.Fatal(err)
 	}
 	// Now, lets perform an encryption with the following parameters:
-	encryptionKey := privateECDHKey.PublicKey() // our encryption key is the public key from our private
-	plaintextMessage := []byte("Hello!")        // our plaintext is the string "Hello!"
-	hashingAlgorithm := sha512.New384()         // SHA-384 as the hashing algorithm
-	variableIV := true                          // use a variable IV/nonce derived from the KDF key
-	additionalData := ([]byte)(nil)             // don't use any additional data for authentication
+	publicKey := privateECDHKey.PublicKey() // our public key is the public key from our private
+	plaintextMessage := []byte("Hello!")    // our plaintext is the string "Hello!"
+	hashingAlgorithm := sha512.New384()     // SHA-384 as the hashing algorithm
+	variableIV := true                      // use a variable IV/nonce derived from the KDF key
+	additionalData := ([]byte)(nil)         // don't use any additional data for authentication
 	// This is equivalent to kSecKeyAlgorithmECIESEncryptionCofactorVariableIVX963SHA384AESGCM
 	// (.eciesEncryptionCofactorVariableIVX963SHA384AESGCM) using Apple SecKeyAlgorithm
 	// and SecKeyCreateEncryptedData()
-	ciphertext, err := ecies.EncryptECIESX963AESGCM(hashingAlgorithm, variableIV, encryptionKey, plaintextMessage, additionalData)
+	ciphertext, err := ecies.EncryptECIESX963AESGCM(hashingAlgorithm, variableIV, publicKey, plaintextMessage, additionalData)
 	if err != nil {
 		log.Fatal(err)
 	}
